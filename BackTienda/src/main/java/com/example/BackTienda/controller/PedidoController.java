@@ -1,6 +1,10 @@
 package com.example.BackTienda.controller;
 
+import com.example.BackTienda.dto.PedidoDTOs.PedidoCreateDTO;
+import com.example.BackTienda.dto.PedidoDTOs.PedidoResponseDTO;
+import com.example.BackTienda.dto.PedidoDTOs.PedidoUpdateDTO;
 import com.example.BackTienda.model.Pedido;
+import com.example.BackTienda.service.IPedidoService;
 import com.example.BackTienda.service.impl.PedidoServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -17,23 +21,23 @@ import java.util.Optional;
 public class PedidoController {
 
 
-    private final PedidoServiceImpl pedidoService;
+    private final IPedidoService pedidoService;
 
     @GetMapping
-    public List<Pedido> obtenerPedidos() {
+    public List<PedidoResponseDTO> obtenerPedidos() {
         return pedidoService.listarPedidos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pedido> obtenerPedidoPorId(@PathVariable Long id) {
-        Optional<Pedido> pedido = pedidoService.buscarPedidoPorId(id);
+    public ResponseEntity<PedidoResponseDTO> obtenerPedidoPorId(@PathVariable Long id) {
+        Optional<PedidoResponseDTO> pedido = pedidoService.buscarPedidoPorId(id);
         return pedido.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/cliente/{id}")
-    public ResponseEntity<List<Pedido>> obtenerPedidosPorClienteId(@PathVariable("id") Long clienteId) {
-        List<Pedido> pedidos = pedidoService.buscarPedidosPorClienteId(clienteId);
+    public ResponseEntity<List<PedidoResponseDTO>> obtenerPedidosPorClienteId(@PathVariable("id") Long clienteId) {
+        List<PedidoResponseDTO> pedidos = pedidoService.buscarPedidosPorClienteId(clienteId);
         if (pedidos.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -41,14 +45,14 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pedido> crearPedido(@RequestBody Pedido pedido) {
-        Pedido nuevoPedido = pedidoService.guardarPedido(pedido);
+    public ResponseEntity<PedidoResponseDTO> crearPedido(@RequestBody PedidoCreateDTO pedidoDTO) {
+        PedidoResponseDTO nuevoPedido = pedidoService.guardarPedido(pedidoDTO);
         return ResponseEntity.ok(nuevoPedido);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pedido> actualizarPedido(@PathVariable Long id, @RequestBody Pedido pedidoActualizado) {
-        Optional<Pedido> pedidoActualizadoOpt = pedidoService.actualizarPedido(id, pedidoActualizado);
+    public ResponseEntity<PedidoResponseDTO> actualizarPedido(@PathVariable Long id, @RequestBody PedidoUpdateDTO pedidoActualizado) {
+        Optional<PedidoResponseDTO> pedidoActualizadoOpt = pedidoService.actualizarPedido(id, pedidoActualizado);
             return pedidoActualizadoOpt.map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
     }

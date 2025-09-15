@@ -1,51 +1,105 @@
 package com.example.BackTienda.service.impl;
 
+import com.example.BackTienda.dto.PedidoDTOs.PedidoCreateDTO;
+import com.example.BackTienda.dto.PedidoDTOs.PedidoResponseDTO;
+import com.example.BackTienda.dto.PedidoDTOs.PedidoUpdateDTO;
 import com.example.BackTienda.model.Pedido;
 import com.example.BackTienda.repository.PedidoRepository;
 import com.example.BackTienda.service.IPedidoService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PedidoServiceImpl implements IPedidoService {
 
-    @Autowired
-    private PedidoRepository pedidoRepository;
+    private final PedidoRepository pedidoRepository;
 
     @Override
-    public List<Pedido> listarPedidos() {
-        return pedidoRepository.findAll();
-    }
-
-    @Override
-    public Optional<Pedido> buscarPedidoPorId(Long id) {
-        return pedidoRepository.findById(id);
+    public List<PedidoResponseDTO> listarPedidos() {
+        return pedidoRepository.findAll()
+                .stream()
+                .map(this::convertEntityToResponseDTO)
+                .toList();
     }
 
     @Override
-    public List<Pedido> buscarPedidosPorClienteId(Long id) {
-        return pedidoRepository.findAllByClienteId(id);
+    public Optional<PedidoResponseDTO> buscarPedidoPorId(Long id) {
+        return pedidoRepository.findById(id)
+                .map(this::convertEntityToResponseDTO);
     }
+
     @Override
-    public Optional<Pedido> actualizarPedido(Long id, Pedido pedidoActualizado) {
-        Optional<Pedido> pedidoExistente = pedidoRepository.findById(id);
-        if (pedidoExistente.isPresent()) {
-        pedidoActualizado.setId(id);
-        pedidoRepository.save(pedidoActualizado);
-        return Optional.of(pedidoActualizado);
-        }
-        return Optional.empty();
+    public List<PedidoResponseDTO> buscarPedidosPorClienteId(Long id) {
+        return pedidoRepository.findAllByClienteId(id)
+                .stream()
+                .map(this::convertEntityToResponseDTO)
+                .toList();
     }
+
     @Override
-    public Pedido guardarPedido(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+    public Optional<PedidoResponseDTO> actualizarPedido(Long id, PedidoUpdateDTO pedidoActualizado) {
+        return pedidoRepository.findById(id)
+            .map(pedidoExistente -> {
+                // Actualizar solo los campos que vienen en el DTO
+                if (pedidoActualizado.getEstado() != null) {
+                    pedidoExistente.setEstado(pedidoActualizado.getEstado());
+                }
+                if (pedidoActualizado.getDireccionEnvio() != null) {
+                    pedidoExistente.setDireccionEnvio(pedidoActualizado.getDireccionEnvio());
+                }
+                if (pedidoActualizado.getMetodoPago() != null) {
+                    pedidoExistente.setMetodoPago(pedidoActualizado.getMetodoPago());
+                }
+                
+                Pedido pedidoGuardado = pedidoRepository.save(pedidoExistente);
+                return convertEntityToResponseDTO(pedidoGuardado);
+            });
+    }
+
+    @Override
+    public PedidoResponseDTO guardarPedido(PedidoCreateDTO pedidoDTO) {
+        Pedido pedido = convertCreateDTOToEntity(pedidoDTO);
+        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+        return convertEntityToResponseDTO(pedidoGuardado);
     }
 
     @Override
     public void eliminarPedido(Long id) {
         pedidoRepository.deleteById(id);
     }
-} 
+
+    private PedidoResponseDTO convertEntityToResponseDTO(Pedido pedido) {
+        PedidoResponseDTO dto = new PedidoResponseDTO();
+        dto.setId(pedido.getId());
+        dto.setClienteId(pedido.getClienteId());
+        dto.setCantidades(pedido.getCantidades());
+        dto.setDireccionEnvio(pedido.getDireccionEnvio());
+        dto.setEstado(pedido.getEstado());
+        dto.setFechaPedido(pedido.getFechaPedido());
+        dto.setFechaRegistro(pedido.getFechaRegistro());
+        dto.setPrecio(pedido.getPrecio());
+        dto.setProductoIds(pedido.getProductoIds());
+        dto.setMetodoPago(pedido.getMetodoPago());
+        return dto;
+    };
+
+    private Pedido convertCreateDTOToEntity(PedidoCreateDTO pedidoDTO){
+        Pedido pedido = new Pedido();
+        pedido.setClienteId(pedidoDTO.getClienteId());
+        pedido.setFechaPedido(pedidoDTO.getFechaPedido());
+        pedido.setProductoIds(pedidoDTO.getProductoIds());
+        pedido.setCantidades(pedidoDTO.getCantidades());
+        pedido.setPrecio(pedidoDTO.getPrecio());
+        pedido.setEstado(pedidoDTO.getEstado());
+        pedido.setDireccionEnvio(pedidoDTO.getDireccionEnvio());
+        pedido.setMetodoPago(pedidoDTO.getMetodoPago());
+        // No asignamos id ni fechaRegistro (se generan automáticamente)
+        return pedido;
+    }
+}

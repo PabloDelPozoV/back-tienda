@@ -1,21 +1,22 @@
 package com.example.BackTienda.controller;
 
 import com.example.BackTienda.model.Producto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 import com.example.BackTienda.service.IProductoService;
+
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/productos")
-
+@RequiredArgsConstructor
 public class ProductoController {
 
-    @Autowired
-    private IProductoService productoService;
+    private final IProductoService productoService;
 
     // Obtener todos los productos
     @GetMapping

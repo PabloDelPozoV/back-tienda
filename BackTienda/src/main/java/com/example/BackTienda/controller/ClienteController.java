@@ -1,6 +1,7 @@
 package com.example.BackTienda.controller;
 
 import com.example.BackTienda.model.Cliente;
+import com.example.BackTienda.service.IClienteService;
 import com.example.BackTienda.service.impl.ClienteServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClienteController {
 
-    private final ClienteServiceImpl clienteService;
+    private final IClienteService clienteService;
 
     @GetMapping
     public List<Cliente> obtenerClientes() {

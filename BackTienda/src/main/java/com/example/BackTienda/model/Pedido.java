@@ -38,11 +38,10 @@ public class Pedido {
     private String metodoPago;
 
     @Column(name = "fecha_registro", updatable = false)
-private LocalDateTime fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @PrePersist
     protected void onCreate() {
-    this.fechaRegistro = LocalDateTime.now();
+        this.fechaRegistro = LocalDateTime.now();
     }
 }
-

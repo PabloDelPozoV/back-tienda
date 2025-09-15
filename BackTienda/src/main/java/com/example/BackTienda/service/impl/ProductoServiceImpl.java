@@ -3,17 +3,19 @@ package com.example.BackTienda.service.impl;
 import com.example.BackTienda.model.Producto;
 import com.example.BackTienda.repository.ProductoRepository;
 import com.example.BackTienda.service.IProductoService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductoServiceImpl implements IProductoService {
 
-    @Autowired
-    private ProductoRepository productoRepository;
+    private final ProductoRepository productoRepository;
 
     @Override
     public List<Producto> listarProductos() {
