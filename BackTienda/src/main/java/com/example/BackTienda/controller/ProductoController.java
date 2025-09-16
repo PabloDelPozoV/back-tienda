@@ -1,5 +1,8 @@
 package com.example.BackTienda.controller;
 
+import com.example.BackTienda.dto.ProductoDTOs.ProductoCreateDTO;
+import com.example.BackTienda.dto.ProductoDTOs.ProductoResponseDTO;
+import com.example.BackTienda.dto.ProductoDTOs.ProductoUpdateDTO;
 import com.example.BackTienda.model.Producto;
 import org.springframework.http.ResponseEntity;
 
@@ -20,22 +23,22 @@ public class ProductoController {
 
     // Obtener todos los productos
     @GetMapping
-    public List<Producto> obtenerProductos() {
+    public List<ProductoResponseDTO> obtenerProductos() {
         return productoService.listarProductos();
     }
 
     // Obtener un producto por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> obtenerProductoPorId(@PathVariable Long id) {
-        Optional<Producto> producto = productoService.buscarProductoPorId(id);
+    public ResponseEntity<ProductoResponseDTO> obtenerProductoPorId(@PathVariable Long id) {
+        Optional<ProductoResponseDTO> producto = productoService.buscarProductoPorId(id);
         return producto.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Obtener productos por categoría
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<Producto>> obtenerProductosPorCategoria(@PathVariable String categoria) {
-        List<Producto> productos = productoService.buscarPorCategoria(categoria);
+    public ResponseEntity<List<ProductoResponseDTO>> obtenerProductosPorCategoria(@PathVariable String categoria) {
+        List<ProductoResponseDTO> productos = productoService.buscarPorCategoria(categoria);
         return ResponseEntity.ok(productos);
     }
 
@@ -49,20 +52,19 @@ public class ProductoController {
     // Crear un nuevo producto
     @PostMapping
 
-    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
-        Producto nuevoProducto = productoService.guardarProducto(producto);
+    public ResponseEntity<ProductoResponseDTO> crearProducto(@RequestBody ProductoCreateDTO productoDTO) {
+        ProductoResponseDTO nuevoProducto = productoService.guardarProducto(productoDTO);
         return ResponseEntity.ok(nuevoProducto);
     }
 
     // Actualizar un producto existente
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id,
-            @RequestBody Producto productoActualizado) {
-        return productoService.buscarProductoPorId(id)
-                .map(productoExistente -> {
-                    productoActualizado.setId(id);
-                    return ResponseEntity.ok(productoService.guardarProducto(productoActualizado));
-                })
+    public ResponseEntity<ProductoResponseDTO> actualizarProducto(@PathVariable Long id,
+            @RequestBody ProductoUpdateDTO productoActualizado) {
+
+        Optional<ProductoResponseDTO> productoActualizadoOpt = productoService.actualizarProducto(id,
+                productoActualizado);
+        return productoActualizadoOpt.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
