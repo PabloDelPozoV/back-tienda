@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,17 +19,14 @@ public class Pedido {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PedidoItem> items = new ArrayList<>();
+
     @Column(name = "fecha_pedido")
     private LocalDateTime fechaPedido;
 
-    @Column(name = "producto_ids")
-    private String productoIds;
-
-    @Column(name = "cantidades")
-    private String cantidades;
-
-    @Column(name = "precio")
-    private Float precio;
+    @Column(name = "total")
+    private Double total;
 
     @Column(nullable = false)
     private String estado;

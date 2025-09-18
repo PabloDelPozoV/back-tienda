@@ -77,25 +77,21 @@ public class PedidoServiceImpl implements IPedidoService {
     private PedidoResponseDTO convertEntityToResponseDTO(Pedido pedido) {
         PedidoResponseDTO dto = new PedidoResponseDTO();
         dto.setId(pedido.getId());
-        dto.setClienteId(pedido.getClienteId());
-        dto.setCantidades(pedido.getCantidades());
+        dto.setClienteId(pedido.getCliente().getId());
         dto.setDireccionEnvio(pedido.getDireccionEnvio());
         dto.setEstado(pedido.getEstado());
         dto.setFechaPedido(pedido.getFechaPedido());
         dto.setFechaRegistro(pedido.getFechaRegistro());
-        dto.setPrecio(pedido.getPrecio());
-        dto.setProductoIds(pedido.getProductoIds());
+        dto.setPrecio(pedido.getTotal());
         dto.setMetodoPago(pedido.getMetodoPago());
         return dto;
     };
 
     private Pedido convertCreateDTOToEntity(PedidoCreateDTO pedidoDTO){
         Pedido pedido = new Pedido();
-        pedido.setClienteId(pedidoDTO.getClienteId());
+        pedido.setCliente(pedidoDTO.getCliente());
         pedido.setFechaPedido(pedidoDTO.getFechaPedido());
-        pedido.setProductoIds(pedidoDTO.getProductoIds());
-        pedido.setCantidades(pedidoDTO.getCantidades());
-        pedido.setPrecio(pedidoDTO.getPrecio());
+        pedido.setTotal(pedidoDTO.getPrecio());
         pedido.setEstado(pedidoDTO.getEstado());
         pedido.setDireccionEnvio(pedidoDTO.getDireccionEnvio());
         pedido.setMetodoPago(pedidoDTO.getMetodoPago());
