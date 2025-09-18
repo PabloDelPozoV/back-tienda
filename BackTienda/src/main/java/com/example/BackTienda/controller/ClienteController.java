@@ -1,8 +1,9 @@
 package com.example.BackTienda.controller;
 
-import com.example.BackTienda.model.Cliente;
+import com.example.BackTienda.dto.ClienteDTOs.ClienteCreateDTO;
+import com.example.BackTienda.dto.ClienteDTOs.ClienteResponseDTO;
+import com.example.BackTienda.dto.ClienteDTOs.ClienteUpdateDTO;
 import com.example.BackTienda.service.IClienteService;
-import com.example.BackTienda.service.impl.ClienteServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,31 +20,26 @@ public class ClienteController {
     private final IClienteService clienteService;
 
     @GetMapping
-    public List<Cliente> obtenerClientes() {
+    public List<ClienteResponseDTO> obtenerClientes() {
         return clienteService.listarClientes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtenerClientePorId(@PathVariable Long id) {
-        Optional<Cliente> cliente = clienteService.buscarClientePorId(id);
+    public ResponseEntity<ClienteResponseDTO> obtenerClientePorId(@PathVariable Long id) {
+        Optional<ClienteResponseDTO> cliente = clienteService.buscarClientePorId(id);
         return cliente.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
-
-        if (cliente.getRol() == null) {
-            cliente.setRol(Cliente.Rol.USER); // por defecto
-        }
-
-        Cliente nuevoCliente = clienteService.guardarCliente(cliente);
+    public ResponseEntity<ClienteResponseDTO> crearCliente(@RequestBody ClienteCreateDTO clienteDTO) {
+        ClienteResponseDTO nuevoCliente = clienteService.guardarCliente(clienteDTO);
         return ResponseEntity.ok(nuevoCliente);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
-        Optional<Cliente> clienteActualizadoOpt = clienteService.actualizarCliente(id, clienteActualizado);
+    public ResponseEntity<ClienteResponseDTO> actualizarCliente(@PathVariable Long id, @RequestBody ClienteUpdateDTO clienteActualizado) {
+        Optional<ClienteResponseDTO> clienteActualizadoOpt = clienteService.actualizarCliente(id, clienteActualizado);
         return clienteActualizadoOpt.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
 
