@@ -1,5 +1,7 @@
 package com.example.BackTienda.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,12 +34,12 @@ public class PedidoItem {
     private int cantidad;
 
     @Column(nullable = false)
-    private double precioUnitario;
+    private BigDecimal precioUnitario;
 
     @Column
-    private double subtotal;
+    private BigDecimal subtotal;
 
     public void calcularSubtotal() {
-    this.subtotal = this.cantidad * this.precioUnitario;
-}
+        this.subtotal = this.precioUnitario.multiply(BigDecimal.valueOf(this.cantidad));
+    }
 }

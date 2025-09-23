@@ -1,5 +1,7 @@
 package com.example.BackTienda.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,7 +21,7 @@ public class Producto {
     private String descripcion;
     
     @Column(nullable = false)
-    private Double precio;
+    private BigDecimal precio;
     
     @Column(nullable = false)
     private Integer stock;

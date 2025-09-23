@@ -1,12 +1,14 @@
 package com.example.BackTienda.dto.ProductoDTOs;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 
 @Data
 public class ProductoUpdateDTO {
     
     private String descripcion;
-    private Double precio;
+    private BigDecimal precio;
     private Integer stock;
     private String categoria;
     private String urlImagen;

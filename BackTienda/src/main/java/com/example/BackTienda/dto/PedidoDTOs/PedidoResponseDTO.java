@@ -1,5 +1,6 @@
 package com.example.BackTienda.dto.PedidoDTOs;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class PedidoResponseDTO {
     private Long clienteId;
     private LocalDateTime fechaPedido;
     private List<PedidoItemResponseDTO> items;
-    private Float precio;
+    private BigDecimal total;
     private String estado;
     private String direccionEnvio;
     private String metodoPago;

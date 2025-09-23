@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.BackTienda.dto.PedidoItemDTOs.PedidoItemCreateDTO;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ public class PedidoCreateDTO {
 
     private LocalDateTime fechaPedido;
 
+    @Valid
     @NotEmpty(message = "El pedido debe contener al menos un producto")
     private List<PedidoItemCreateDTO> items;
 

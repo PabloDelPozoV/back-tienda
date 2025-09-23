@@ -3,6 +3,7 @@ package com.example.BackTienda.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,8 @@ public class Pedido {
     @Column(name = "fecha_pedido")
     private LocalDateTime fechaPedido;
 
-    @Column(name = "total")
-    private Double total;
+    @Column(name = "total", precision = 10, scale = 2)
+    private BigDecimal total;
 
     @Column(nullable = false)
     private String estado;
