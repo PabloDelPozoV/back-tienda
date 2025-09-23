@@ -33,10 +33,10 @@ public class PedidoItem {
     @Column(nullable = false)
     private int cantidad;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
-    @Column
+    @Column(precision = 10, scale = 2)
     private BigDecimal subtotal;
 
     public void calcularSubtotal() {

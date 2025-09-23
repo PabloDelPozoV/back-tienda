@@ -17,6 +17,7 @@ import com.example.BackTienda.service.IPedidoService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class PedidoServiceImpl implements IPedidoService {
     private final ProductoRepository productoRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<PedidoResponseDTO> listarPedidos() {
         return pedidoRepository.findAll()
                 .stream()
@@ -42,6 +44,7 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<PedidoResponseDTO> buscarPedidoPorId(Long id) {
         return pedidoRepository.findById(id)
                 .map(this::convertEntityToResponseDTO);
@@ -136,7 +139,13 @@ public class PedidoServiceImpl implements IPedidoService {
     private PedidoResponseDTO convertEntityToResponseDTO(Pedido pedido) {
         PedidoResponseDTO dto = new PedidoResponseDTO();
         dto.setId(pedido.getId());
-        dto.setClienteId(pedido.getCliente().getId());
+        
+        // Manejo seguro del cliente
+        if (pedido.getCliente() != null) {
+            dto.setClienteId(pedido.getCliente().getId());
+        }
+        
+        // Campos básicos del pedido
         dto.setDireccionEnvio(pedido.getDireccionEnvio());
         dto.setEstado(pedido.getEstado());
         dto.setFechaPedido(pedido.getFechaPedido());
@@ -145,10 +154,12 @@ public class PedidoServiceImpl implements IPedidoService {
         dto.setMetodoPago(pedido.getMetodoPago());
         
         // Mapear los items del pedido
-        List<PedidoItemResponseDTO> itemsDTO = pedido.getItems().stream()
-                .map(this::convertPedidoItemToResponseDTO)
-                .collect(Collectors.toList());
-        dto.setItems(itemsDTO);
+        if (pedido.getItems() != null) {
+            List<PedidoItemResponseDTO> itemsDTO = pedido.getItems().stream()
+                    .map(this::convertPedidoItemToResponseDTO)
+                    .collect(Collectors.toList());
+            dto.setItems(itemsDTO);
+        }
         
         return dto;
     }

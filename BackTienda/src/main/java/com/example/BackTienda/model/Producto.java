@@ -17,7 +17,7 @@ public class Producto {
     @Column(nullable = false)
     private String nombre;
     
-    @Column(nullable = false)
+    @Column()
     private String descripcion;
     
     @Column(nullable = false)
@@ -26,7 +26,7 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
-    @Column(nullable = false)
+    @Column()
     private String categoria;
     
     @Column(name = "url_imagen")

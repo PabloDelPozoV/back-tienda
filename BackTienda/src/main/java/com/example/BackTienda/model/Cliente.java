@@ -39,7 +39,7 @@ public class Cliente {
     @Column(nullable = false)
     private String pais;
 
-    @Column(nullable = false)
+    @Column()
     private String telefono;
 
 
@@ -52,9 +52,17 @@ public class Cliente {
     @Column(nullable = false)
     private Rol rol = Rol.USER;
 
-    
-
     private LocalDateTime fechaRegistro;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.rol == null) {
+            this.rol = Rol.USER;
+        }
+        if (this.fechaRegistro == null) {
+            this.fechaRegistro = LocalDateTime.now();
+        }
+    }
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
     this.fechaRegistro = fechaRegistro;

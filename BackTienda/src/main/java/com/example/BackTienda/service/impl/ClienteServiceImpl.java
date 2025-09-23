@@ -94,6 +94,7 @@ public class ClienteServiceImpl implements IClienteService {
         dto.setPais(cliente.getPais());
         dto.setTelefono(cliente.getTelefono());
         dto.setUsername(cliente.getUsername());
+        dto.setRol(cliente.getRol()); 
 
         return dto;
     }
